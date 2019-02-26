@@ -26,16 +26,16 @@ namespace RestaurantRater.WebMVC.Controllers
         //POST: Restaurant/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include ="RestaurantID,Name,Address,Rating")] Restaurant restaurant)
+        public ActionResult Create([Bind(Include = "RestaurantID,Name,Address,Rating")] Restaurant restaurant)
+        {
+            if (ModelState.IsValid)
             {
-                if (ModelState.IsValid)
-                {
-                    db.Restaurants.Add(restaurant);
-                    db.SaveChanges();
-                    return RedirectToAction("Index");
-                }
-                return View(restaurant);
+                db.Restaurants.Add(restaurant);
+                db.SaveChanges();
+                return RedirectToAction("Index");
             }
+            return View(restaurant);
+        }
 
         public ActionResult Delete(int? id)
         {
@@ -62,6 +62,37 @@ namespace RestaurantRater.WebMVC.Controllers
             db.SaveChanges();
             return RedirectToAction("Index");
         }
+
+        public ActionResult Edit(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+
+            Restaurant restaurant = db.Restaurants.Find(id);
+
+            if (restaurant == null)
+            {
+                return HttpNotFound();
+            }
+
+            return View(restaurant);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Edit([Bind(Include = "RestaurantID, Name, Address, Rating")]Restaurant restaurant)
+        {
+            if (ModelState.IsValid)
+            {
+                db.Entry(restaurant).State = System.Data.Entity.EntityState.Modified;
+                db.SaveChanges();
+                return RedirectToAction("Index");
+            }
+            return View(restaurant);
+        }
+
         protected override void Dispose(bool disposing)
         {
             if (disposing)
