@@ -1,0 +1,38 @@
+﻿@model RestaurantRater.WebMVC.Models.Restaurant
+    @{
+        ViewBag.Title = "Details";
+    }
+
+    <h2>Details</h2>
+
+    <div>
+        <h4>
+            Restaurant
+        </h4>
+        <hr />
+        <dl class="d1-horizontal">
+            <dt>
+                @Html.DisplayNameFor(model => model.Name)
+            </dt>
+            <dt>
+                @Html.DisplayNameFor(model => model.Address)
+            </dt>
+            <dt>
+                @Html.DisplayNameFor(model => model.Rating)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.Name)
+            </dd>
+            <dd>
+                @Html.DisplayFor(model => model.Address)
+            </dd>
+            <dd>
+                @Html.DisplayFor(model => model.Rating)
+            </dd>
+        </dl>
+    </div>
+    <p>
+        @Html.ActionLink("Edit", "Edit", new { id = Model.RestaurantID })
+        @Html.ActionLink("Back to List", "Index")
+    </p>
+
