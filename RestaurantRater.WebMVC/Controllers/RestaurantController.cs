@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using static RestaurantRater.WebMVC.Models.Restaurant;
@@ -14,7 +15,7 @@ namespace RestaurantRater.WebMVC.Controllers
         // GET: Restaurant
         public ActionResult Index()
         {
-            return View(db.Restaurants.ToList());
+            return View(db.Restaurants.ToList()); //snapshot of restaurant
         }
 
         public ActionResult Create()
@@ -25,7 +26,7 @@ namespace RestaurantRater.WebMVC.Controllers
         //POST: Restaurant/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include ="restaurantId, Name")] Restaurant restaurant)
+        public ActionResult Create([Bind(Include ="RestaurantID,Name,Address,Rating")] Restaurant restaurant)
             {
                 if (ModelState.IsValid)
                 {
@@ -35,5 +36,39 @@ namespace RestaurantRater.WebMVC.Controllers
                 }
                 return View(restaurant);
             }
+
+        public ActionResult Delete(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            Restaurant restaurant = db.Restaurants.Find(id);
+
+            if (restaurant == null)
+            {
+                return HttpNotFound();  //makes sure restaurant is not null
+            }
+
+            return View(restaurant); // returns restaurant to the view
+        }
+
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public ActionResult DeleteConfirmed(int id)
+        {
+            Restaurant restaurant = db.Restaurants.Find(id);
+            db.Restaurants.Remove(restaurant);
+            db.SaveChanges();
+            return RedirectToAction("Index");
+        }
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                db.Dispose();
+            }
+            base.Dispose(disposing);
+        }
     }
 }
